@@ -1,0 +1,5 @@
+
+dependencies{
+    compileOnly "org.springframework:spring-context:5.1.10.RELEASE"
+    compileOnly "org.springframework:spring-beans:5.1.10.RELEASE"
+}

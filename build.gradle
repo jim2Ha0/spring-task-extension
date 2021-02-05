@@ -1,0 +1,14 @@
+
+subprojects {
+	apply plugin: "java"
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    repositories {
+        maven { url 'http://maven.aliyun.com/repository/central' }
+        maven{ url 'http://maven.aliyun.com/repository/jcenter'}
+        maven{ url 'http://maven.aliyun.com/repository/google'}
+        maven{ url 'http://maven.aliyun.com/repository/gradle-plugin'}
+        maven{ url 'http://maven.aliyun.com/repository/spring'}
+        maven{ url 'http://maven.aliyun.com/repository/spring-plugin'}
+    }
+}

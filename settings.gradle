@@ -1,0 +1,8 @@
+rootProject.name="spring-task-extension"
+include 'spring-task-core'
+include 'spring-task-support'
+include 'spring-task-test'
+
+rootProject.children.each {
+    it.buildFileName = it.name + ".gradle"
+}
