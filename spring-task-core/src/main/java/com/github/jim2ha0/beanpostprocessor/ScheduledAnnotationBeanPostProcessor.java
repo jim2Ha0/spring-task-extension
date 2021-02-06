@@ -33,12 +33,10 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.config.*;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.util.StringValueResolver;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -107,6 +105,7 @@ public class ScheduledAnnotationBeanPostProcessor
     }
 
     /**
+     * @param  scheduler
      * Set the {@link org.springframework.scheduling.TaskScheduler} that will invoke
      * the scheduled methods, or a {@link java.util.concurrent.ScheduledExecutorService}
      * to be wrapped as a TaskScheduler.
@@ -448,7 +447,7 @@ public class ScheduledAnnotationBeanPostProcessor
      * @param target the target bean instance
      * @param method the scheduled method to call
      * @since 5.1
-     * @see ScheduledMethodRunnable#ScheduledMethodRunnable(Object, Method)
+     * @return Runnable
      */
 
     protected Runnable createRunnable(Object target, Method method) {

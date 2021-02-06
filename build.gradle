@@ -11,5 +11,100 @@ subprojects {
         maven{ url 'http://maven.aliyun.com/repository/spring'}
         maven{ url 'http://maven.aliyun.com/repository/spring-plugin'}
     }
+    group = "com.github.jim2ha0"
+    //version = "1.0.0-SNAPSHOT"
+    version = "1.0.0"
+    apply plugin: 'maven'
+    apply plugin: 'signing'
 
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
+    }
+
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    artifacts {
+        archives javadocJar, sourcesJar
+    }
+    signing {
+        sign configurations.archives
+    }
+// gpg --gen-key
+// gpg --export-secret-keys -o /mnt/c/Users/ipple/.gnupg/secring.gpg
+// 2B5731223919E14FB5AAED666CB0D60DB53D088
+// gpg --keyserver hkp://keyserver.ubuntu.com:11371 --send-keys 6CB0D60DB53D0884
+/**
+ * Real name: jim2ha0
+ * Email address: jim.zhao@aliyun.com
+ * You selected this USER-ID:
+ *     "jim2ha0 <jim.zhao@aliyun.com>"
+ *
+ * Change (N)ame, (E)mail, or (O)kay/(Q)uit? O
+ * We need to generate a lot of random bytes. It is a good idea to perform
+ * some other action (type on the keyboard, move the mouse, utilize the
+ * disks) during the prime generation; this gives the random number
+ * generator a better chance to gain enough entropy.
+ * We need to generate a lot of random bytes. It is a good idea to perform
+ * some other action (type on the keyboard, move the mouse, utilize the
+ * disks) during the prime generation; this gives the random number
+ * generator a better chance to gain enough entropy.
+ * gpg: /home/jim/.gnupg/trustdb.gpg: trustdb created
+ * gpg: key 6CB0D60DB53D0884 marked as ultimately trusted
+ * gpg: directory '/home/jim/.gnupg/openpgp-revocs.d' created
+ * gpg: revocation certificate stored as '/home/jim/.gnupg/openpgp-revocs.d/2B5731223919E14FB5AAED666CB0D60DB53D0884.rev'
+ * public and secret key created and signed.
+ *
+ * pub   rsa3072 2021-02-06 [SC] [expires: 2023-02-06]
+ *       2B5731223919E14FB5AAED666CB0D60DB53D0884
+ * uid                      jim2ha0 <jim.zhao@aliyun.com>
+ * sub   rsa3072 2021-02-06 [E] [expires: 2023-02-06]
+ */
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                pom.project {
+                    name 'spring task extension'
+                    packaging 'jar'
+                    description 'spring task extension project'
+                    url 'https://github.com/jim2Ha0/spring-task-extension/spring-task-test'
+
+                    scm {
+                        connection 'scm:git:git@github.com:jim2Ha0/spring-task-extension.git'
+                        developerConnection 'scm:git:git@github.com:jim2Ha0/spring-task-extension.git'
+                        url 'https://github.com/jim2Ha0/spring-task-extension'
+                    }
+
+                    licenses {
+                        license {
+                            name 'The Apache License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'jim'
+                            name 'jim2ha0'
+                            email 'jim.zhao@aliyun.com'
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
+

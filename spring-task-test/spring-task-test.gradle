@@ -9,6 +9,8 @@ description = "spring-task-test"
 dependencies{
     compile project(":spring-task-core")
     compile project(":spring-task-support")
+    //compile "com.github.jim2ha0:spring-task-core:1.0.0"
+    //compile "com.github.jim2ha0:spring-task-support:1.0.0"
     implementation "org.springframework.boot:spring-boot-starter-web"
 }
 

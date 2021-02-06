@@ -11,13 +11,13 @@ import java.lang.annotation.*;
 public @interface Scheduled {
 	/**
 	 * lock implement class type
-	 * @return
+	 * @return Class&lt;? extends Lock&gt;
 	 */
 	Class<? extends Lock> lockClazz() default Lock.class;
 
 	/**
 	 * lock key name
-	 * @return
+	 * @return String
 	 */
 	String lockName() default "";
 
