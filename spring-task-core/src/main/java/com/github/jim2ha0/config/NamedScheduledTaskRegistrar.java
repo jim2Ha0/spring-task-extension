@@ -1,6 +1,7 @@
 package com.github.jim2ha0.config;
 
 import com.github.jim2ha0.NameAware;
+import com.github.jim2ha0.lock.Lock;
 import com.github.jim2ha0.thread.NamedThreadFactory;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
@@ -11,7 +12,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class NamedScheduledTaskRegistrar extends ScheduledTaskRegistrar implements NameAware {
     private String name;
-
+    private Lock<? extends Lock> lock;
     public NamedScheduledTaskRegistrar(){
         super();
         this.name = "Default";
@@ -34,5 +35,12 @@ public class NamedScheduledTaskRegistrar extends ScheduledTaskRegistrar implemen
     @Override
     public String getName() {
         return name;
+    }
+
+    public void setLock(Lock<? extends Lock> lock){
+        this.lock = lock;
+    }
+    public Lock<? extends Lock> getLock(){
+        return lock;
     }
 }

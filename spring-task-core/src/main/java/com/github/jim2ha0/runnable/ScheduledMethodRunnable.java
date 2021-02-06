@@ -1,32 +1,38 @@
-package com.github.jim2ha0.aop;
+package com.github.jim2ha0.runnable;
 
-import com.github.jim2ha0.annotation.Scheduled;
 import com.github.jim2ha0.config.NamedScheduledTaskRegistrar;
 import com.github.jim2ha0.lock.Lock;
+import com.github.jim2ha0.annotation.Scheduled;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.util.ObjectUtils;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-public class ScheduledMethodInvocationHandler implements InvocationHandler {
-    private Runnable target;
-    private Method orginalMethod;
+public class ScheduledMethodRunnable extends org.springframework.scheduling.support.ScheduledMethodRunnable {
     private ListableBeanFactory beanFactory;
     private NamedScheduledTaskRegistrar registrar;
-    public ScheduledMethodInvocationHandler(NamedScheduledTaskRegistrar registrar, ListableBeanFactory beanFactory, Runnable runnable, Method method){
+    public ScheduledMethodRunnable(NamedScheduledTaskRegistrar registrar,Object target, Method method,ListableBeanFactory beanFactory) {
+        super(target,method);
         this.registrar = registrar;
         this.beanFactory = beanFactory;
-        this.target = runnable;
-        this.orginalMethod = method;
     }
+
+    public ScheduledMethodRunnable(NamedScheduledTaskRegistrar registrar,Object target, String methodName,ListableBeanFactory beanFactory) throws NoSuchMethodException {
+        super(target,methodName);
+        this.registrar = registrar;
+        this.beanFactory = beanFactory;
+    }
+
+
+
+
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Scheduled scheduled = orginalMethod.getAnnotation(Scheduled.class);
+    public void run() {
+        Scheduled scheduled = getMethod().getAnnotation(Scheduled.class);
         if(ObjectUtils.isEmpty(scheduled) || ObjectUtils.isEmpty(scheduled.lockName())){
-            return method.invoke(target,args);
+            super.run();
         }else{
             Lock lock = registrar.getLock();
             if(ObjectUtils.isEmpty(lock)){
@@ -36,18 +42,20 @@ public class ScheduledMethodInvocationHandler implements InvocationHandler {
                     lock = null;
                 }
             }
+
             if(ObjectUtils.isEmpty(lock)){
-                return method.invoke(target,args);
+                super.run();
             }else{
                 Object resource = lock.tryLock(scheduled.lockName());
                 if(ObjectUtils.isEmpty(resource)){
-                    return null;
                 }else{
-                    Object object = method.invoke(target,args);
+                    super.run();
                     lock.releaseLock(resource);
-                    return object;
                 }
             }
         }
     }
+
+
+
 }

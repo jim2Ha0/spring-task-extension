@@ -1,4 +1,5 @@
+description = "spring-task-support"
 
 dependencies{
-    compile project(":spring-task-core")
+    compileOnly project(":spring-task-core")
 }

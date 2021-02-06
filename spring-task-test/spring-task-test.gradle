@@ -4,7 +4,6 @@ plugins {
 }
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'//spring-boot-starter依赖管理
-group = 'spring-task-test'
 description = "spring-task-test"
 
 dependencies{

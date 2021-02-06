@@ -1,9 +1,11 @@
-package com.github.jim2ha0;
+package com.github.jim2ha0.beanpostprocessor;
 
 import com.github.jim2ha0.annotation.Scheduled;
 import com.github.jim2ha0.annotation.Schedules;
 import com.github.jim2ha0.aop.ScheduledMethodInvocationHandler;
 import com.github.jim2ha0.config.NamedScheduledTaskRegistrar;
+import com.github.jim2ha0.config.SchedulingConfigurer;
+import com.github.jim2ha0.runnable.ScheduledMethodRunnable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.aop.framework.AopInfrastructureBean;
@@ -28,10 +30,8 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.*;
 import org.springframework.scheduling.support.CronTrigger;
-import org.springframework.scheduling.support.ScheduledMethodRunnable;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
@@ -455,12 +455,7 @@ public class ScheduledAnnotationBeanPostProcessor
         Assert.isTrue(method.getParameterCount() == 0, "Only no-arg methods may be annotated with @Scheduled");
         Method invocableMethod = AopUtils.selectInvocableMethod(method, target.getClass());
         //return new ScheduledMethodRunnable(target, invocableMethod);
-        return (Runnable) Proxy.newProxyInstance(
-                ClassUtils.getDefaultClassLoader(),
-                new Class[]{Runnable.class},
-                new ScheduledMethodInvocationHandler((DefaultListableBeanFactory)beanFactory,
-                        new ScheduledMethodRunnable(target,invocableMethod),invocableMethod)
-        );
+        return new ScheduledMethodRunnable(registrar,target,invocableMethod,(DefaultListableBeanFactory)beanFactory);
     }
 
     private static long parseDelayAsLong(String value) throws RuntimeException {

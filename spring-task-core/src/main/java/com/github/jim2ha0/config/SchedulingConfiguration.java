@@ -1,6 +1,6 @@
 package com.github.jim2ha0.config;
 
-import com.github.jim2ha0.ScheduledAnnotationBeanPostProcessor;
+import com.github.jim2ha0.beanpostprocessor.ScheduledAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
